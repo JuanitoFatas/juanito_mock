@@ -1,11 +1,5 @@
-require 'test_helper'
+require "test_helper"
 
-class JuanitoMockTest < Minitest::Test
-  def test_that_it_has_a_version_number
-    refute_nil ::JuanitoMock::VERSION
-  end
+describe JuanitoMock do
 
-  def test_it_does_something_useful
-    assert false
-  end
 end
