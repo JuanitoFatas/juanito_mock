@@ -7,6 +7,16 @@ module JuanitoMock
     end
 
     def to(definition)
+      Stubber.new(@obj).stub(definition)
+    end
+  end
+
+  class Stubber
+    def initialize(obj)
+      @obj = obj
+    end
+
+    def stub(definition)
       @obj.define_singleton_method definition.message do
         definition.return_value
       end
