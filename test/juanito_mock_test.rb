@@ -8,4 +8,14 @@ describe JuanitoMock do
 
     warehouse.full?.must_equal true
   end
+
+  it "removes stubbed method after tests finished" do
+    warehouse = Object.new
+
+    allow(warehouse).to receive(:full?).and_return(true)
+
+    JuanitoMock.reset
+
+    assert_raises(NoMethodError) { warehouse.full? }
+  end  
 end

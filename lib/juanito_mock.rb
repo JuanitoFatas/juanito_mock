@@ -19,7 +19,7 @@ module JuanitoMock
     def initialize(message)
       @message = message
     end
-    
+
     def and_return(return_value)
       @return_value = return_value
       self
@@ -34,6 +34,9 @@ module JuanitoMock
     def receive(message)
       ExpectationDefinition.new(message)
     end
+  end
+
+  def self.reset
   end
 end
 
