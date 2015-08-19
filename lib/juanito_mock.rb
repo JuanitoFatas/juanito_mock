@@ -48,8 +48,12 @@ module JuanitoMock
           @obj.singleton_class.instance_method(definition.message)
       end
 
-      @obj.define_singleton_method definition.message do
-        definition.call
+      definitions = @definitions
+      @obj.define_singleton_method definition.message do |*arguments|
+        definitions
+          .reverse
+          .find { |definition| definition.matches(definition.message, *arguments) }
+          .call
       end
     end
 
@@ -77,6 +81,16 @@ module JuanitoMock
     def and_return(return_value)
       @return_value = return_value
       self
+    end
+
+    def with(*arguments)
+      @arguments = arguments
+      self
+    end
+
+    def matches(message, *arguments)
+      message == @message &&
+        (@arguments.nil?) || arguments == @arguments
     end
 
     def call

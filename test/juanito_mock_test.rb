@@ -51,4 +51,14 @@ describe JuanitoMock do
 
     JuanitoMock.reset # assert nothing raised!
   end
+
+  it "allows object to receive messages with arguments" do
+    warehouse = Object.new
+
+    allow(warehouse).to receive(:include?).with(1234).and_return(true)
+    allow(warehouse).to receive(:include?).with(9876).and_return(false)
+
+    warehouse.include?(1234).must_equal true
+    warehouse.include?(9876).must_equal false
+  end
 end
