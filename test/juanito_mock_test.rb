@@ -29,4 +29,16 @@ describe JuanitoMock do
 
     warehouse.full?.must_equal false
   end
+
+  it "expects that a message will be received" do
+    warehouse = Object.new
+
+    assume(warehouse).to receive(:empty)
+
+    # warehouse.empty not called!
+
+    assert_raises(JuanitoMock::ExpectationNotSatisfied) do
+      JuanitoMock.reset
+    end
+  end
 end

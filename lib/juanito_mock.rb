@@ -1,6 +1,8 @@
 require "juanito_mock/version"
 
 module JuanitoMock
+  ExpectationNotSatisfied = Class.new(StandardError)
+
   class StubTarget
     def initialize(obj)
       @obj = obj
@@ -8,6 +10,13 @@ module JuanitoMock
 
     def to(definition)
       Stubber.for_object(@obj).stub(definition)
+    end
+  end
+
+  class ExpectationTarget < StubTarget
+    def to(definition)
+      super
+      JuanitoMock.expectations << definition
     end
   end
 
@@ -68,11 +77,19 @@ module JuanitoMock
       @return_value = return_value
       self
     end
+
+    def verify
+      raise ExpectationNotSatisfied
+    end
   end
 
   module TestExtensions
     def allow(obj)
       StubTarget.new(obj)
+    end
+
+    def assume(obj)
+      ExpectationTarget.new(obj)
     end
 
     def receive(message)
@@ -81,7 +98,14 @@ module JuanitoMock
   end
 
   def self.reset
+    expectations.each(&:verify)
+  ensure
+    expectations.clear
     Stubber.reset
+  end
+
+  def self.expectations
+    @expectations ||= []
   end
 end
 
