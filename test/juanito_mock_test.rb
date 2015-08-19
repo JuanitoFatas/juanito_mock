@@ -41,4 +41,14 @@ describe JuanitoMock do
       JuanitoMock.reset
     end
   end
+
+  it "does not raise an error if expectations are satisfied" do
+    warehouse = Object.new
+
+    assume(warehouse).to receive(:empty)
+
+    warehouse.empty
+
+    JuanitoMock.reset # assert nothing raised!
+  end
 end

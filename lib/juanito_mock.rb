@@ -49,7 +49,7 @@ module JuanitoMock
       end
 
       @obj.define_singleton_method definition.message do
-        definition.return_value
+        definition.call
       end
     end
 
@@ -71,6 +71,7 @@ module JuanitoMock
 
     def initialize(message)
       @message = message
+      @invocation_count = 0
     end
 
     def and_return(return_value)
@@ -78,8 +79,15 @@ module JuanitoMock
       self
     end
 
+    def call
+      @invocation_count += 1
+      @return_value
+    end
+
     def verify
-      raise ExpectationNotSatisfied
+      if @invocation_count != 1
+        raise ExpectationNotSatisfied
+      end
     end
   end
 
