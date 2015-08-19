@@ -17,5 +17,16 @@ describe JuanitoMock do
     JuanitoMock.reset
 
     assert_raises(NoMethodError) { warehouse.full? }
-  end  
+  end
+
+  it "preserves methods that originally existed" do
+    warehouse = Object.new
+    def warehouse.full?; false; end # defining methods on Ruby singleton class
+
+    allow(warehouse).to receive(:full?).and_return(true)
+
+    JuanitoMock.reset
+
+    warehouse.full?.must_equal false
+  end
 end

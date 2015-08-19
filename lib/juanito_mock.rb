@@ -28,10 +28,16 @@ module JuanitoMock
     def initialize(obj)
       @obj = obj
       @definitions = []
+      @preserved_methods = []
     end
 
     def stub(definition)
       @definitions << definition
+
+      if @obj.singleton_class.method_defined?(definition.message)
+        @preserved_methods <<
+          @obj.singleton_class.instance_method(definition.message)
+      end
 
       @obj.define_singleton_method definition.message do
         definition.return_value
@@ -43,6 +49,10 @@ module JuanitoMock
         @obj.singleton_class.class_eval do
           remove_method(definition.message) if method_defined?(definition.message)
         end
+      end
+
+      @preserved_methods.reverse_each do |method|
+        @obj.define_singleton_method(method.name, method)
       end
     end
   end
